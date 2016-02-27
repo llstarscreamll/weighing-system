@@ -20,7 +20,7 @@ class HomeController extends Controller
         // la clase que gestina la conexión con el puerto serial
         $serialPort = new SerialPortHelper(['com2:', 9600, 8, 1]);
 
-        // la info del peso del puerto serial
+        // la info del peso que arroja el puerto serial
         $data['weight'] = '';
 
         // si se puede establecer conexión con el puerto serial

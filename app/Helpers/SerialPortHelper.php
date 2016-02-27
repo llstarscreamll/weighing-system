@@ -71,6 +71,16 @@ class SerialPortHelper
 	 *
 	 * Un corto turotial sobr ela instalación:
 	 * http://www.brainboxes.com/faq/items/how-do-i-control-a-serial-port-using-php
+	 *
+	 * IMPORTANTE, se la extención no está siendo cargada pero los ficheros están en
+	 * la carpeta de extenciones de PHP, verificar que se ha añadido la extención en
+	 * el php.ini:
+	 * 
+	 * Unix -> extension=dio.so
+	 * Windows -> extension=php_dio.dll
+	 *
+	 * He probado que en windows la extención es quitada en cada reinicio de la
+	 * máquina, hay que estar añadiendo constantemente a php.ini la extención.
 	 * 
 	 * @return bool
 	 */
