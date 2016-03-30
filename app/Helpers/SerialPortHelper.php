@@ -69,7 +69,7 @@ class SerialPortHelper
 	 * Documentación de la extención:
 	 * http://php.net/manual/en/book.dio.php
 	 *
-	 * Un corto turotial sobr ela instalación:
+	 * Un corto turotial sobre la instalación:
 	 * http://www.brainboxes.com/faq/items/how-do-i-control-a-serial-port-using-php
 	 *
 	 * IMPORTANTE, se la extención no está siendo cargada pero los ficheros están en
@@ -102,17 +102,17 @@ class SerialPortHelper
 			if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN'){
 
 				// abrimos la conexión
-				$this->serialPortResource = dio_open($this->portName, O_RDWR);
+				$this->serialPortResource = \dio_open($this->portName, O_RDWR);
 				// como estamos en windows, se ha de configurar el puerto desde la línea de comandos
 				exec("mode {$this->portName} baud={$this->baudRate} data={$this->bits} stop={$this->stopBits} parity=n xon=on");
 
 			}else{ // caso para 'nix
 
 				// abrimos la conexión
-				$this->serialPortResource = dio_open($this->portName, O_RDWR | O_NOCTTY | O_NONBLOCK );
+				$this->serialPortResource = \dio_open($this->portName, O_RDWR | O_NOCTTY | O_NONBLOCK );
 				dio_fcntl($this->serialPortResource, F_SETFL, O_SYNC);
 
-				// al esta en 'nix configuramos COM directamente desde la función io de php
+				// al estar en 'nix configuramos COM directamente desde la función io de php
 				dio_tcsetattr($this->serialPortResource, array(
 					'baud' 		=> $this->baudRate,
 					'bits' 		=> $this->bits,
@@ -144,14 +144,15 @@ class SerialPortHelper
 		// tiempo límete para leer los datos, cinco segundos
 		$runForSeconds = new \DateInterval("PT5S");
 		$endTime = (new \DateTime())->add($runForSeconds);
-				
-		// leo los datos del puerto
-		$data = dio_read($this->serialPortResource, 256); // llamada de bloque
+		while(new \DateTime < $endTime){
+			// leo los datos del puerto
+			$data = dio_read($this->serialPortResource, 256); // llamada de bloque
+			
+			// si se han recibido datos, los devuelvo
+			if ($data)
+				return $data;
+		}
 		
-		// si se han recibido datos, los devuelvo
-		if ($data)
-			return $data;
-
 		return null;
 	}
 

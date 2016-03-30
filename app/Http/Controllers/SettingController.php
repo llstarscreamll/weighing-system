@@ -2,36 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 
 use App\Http\Requests;
-use Illuminate\Http\Request;
+use App\Models\Setting;
 use App\Http\Controllers\Controller;
-use App\Helpers\SerialPortHelper;
 
-class HomeController extends Controller
+class SettingController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
-        // la clase que gestina la conexión con el puerto serial
-        $serialPort = new SerialPortHelper(['com2:', 9600, 8, 1]);
-
-        // la info del peso que arroja el puerto serial
-        $data['weight'] = '';
-
-        // si se puede establecer conexión con el puerto serial
-        if ($serialPort->isTheExtentionInstaled() && $serialPort->conectToSerialPort()){
-            $data['weight'] = trim($serialPort->readData());
-            $serialPort->closeConexion();
-        }else{
-            $request->session()->flash('error', 'No se puede establecer conexión con el puerto serial');
-        }
-
-        return view('scales.registerWeight', $data);
+        //
     }
 
     /**
@@ -74,7 +60,9 @@ class HomeController extends Controller
      */
     public function edit($id)
     {
-        //
+        $data['setting'] = Setting::findOrFail($id);
+
+        return view('settings/edit', $data);
     }
 
     /**
@@ -86,7 +74,13 @@ class HomeController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $setting = Setting::findOrFail($id);
+        $setting->fill($request->all());
+        $setting->save()
+            ? $request->session()->flash('success', 'Configuración actualizada correctamente.')
+            : $request->session()->flash('error', 'No se pudo actualizar la configuración.');
+
+        return redirect()->back();
     }
 
     /**
